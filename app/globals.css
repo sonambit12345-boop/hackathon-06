@@ -1,0 +1,436 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+/*
+  STRIKE design system (recreation)
+  - Pure black canvas, slate-100 foreground
+  - Audiowide display font, Inter body
+  - Amber/gold + lime/green accents pulled from the live site
+*/
+
+@theme inline {
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
+  --color-lime: var(--lime);
+  --color-silver: var(--silver);
+  --color-danger: var(--danger);
+
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-2xl: 2rem;
+}
+
+:root {
+  color-scheme: dark;
+
+  --background: #000000;
+  --foreground: #f1f5f9;
+
+  /* elevated dark panels */
+  --surface: #0a0a0b;
+  --surface-2: #141416;
+
+  --muted: #1c1c1f;
+  --muted-foreground: #94a3b8;
+  --border: rgba(255, 255, 255, 0.08);
+
+  --primary: #f1f5f9;
+  --primary-foreground: #050505;
+
+  /* STRIKE accents */
+  --gold: #f5c451;
+  --gold-soft: #d9a441;
+  --lime: #a3e635;
+  --silver: #cbd5e1;
+  --danger: #ef4444;
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    font-size: 106.25%;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: var(--gold);
+    color: #000;
+  }
+}
+
+@layer components {
+  .font-display {
+    font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+    letter-spacing: -0.02em;
+  }
+
+  /* Section container width matches the site's centered layout */
+  .strike-container {
+    width: 100%;
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+
+  /* Pill navbar */
+  .nav-pill {
+    background: rgba(20, 20, 22, 0.75);
+    backdrop-filter: blur(14px);
+    border: 1px solid var(--border);
+  }
+}
+
+/* ---- Reusable, GPU-friendly animation utilities ---- */
+
+@keyframes strike-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(28px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Revealed when the .reveal element scrolls into view (IntersectionObserver adds .is-visible) */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px) scale(0.98);
+  will-change: opacity, transform;
+}
+.reveal.is-visible {
+  animation: strike-fade-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+  .reveal.is-visible {
+    animation: none;
+  }
+}
+
+/* Line-by-line reveal for the hero code editor on first paint */
+@keyframes strike-line-in {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+  .code-line {
+  opacity: 0;
+  }
+  .code-scroll.is-visible .code-line {
+  animation: strike-line-in 0.3s ease-out forwards;
+  animation-delay: calc(var(--n, 0) * 45ms);
+  }
+  @media (prefers-reduced-motion: reduce) {
+  .code-line {
+  opacity: 1;
+  animation: none;
+  }
+  }
+
+/* Marquee for testimonials + logos (pauses on hover) */
+@keyframes strike-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: strike-marquee var(--marquee-duration, 40s) linear infinite;
+  will-change: transform;
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+}
+
+/* Soft pulsing glow used by the sale discovery cue */
+@keyframes strike-pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgba(245, 196, 81, 0.45);
+  }
+  70% {
+    box-shadow: 0 0 0 16px rgba(245, 196, 81, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(245, 196, 81, 0);
+  }
+}
+.pulse-ring {
+  animation: strike-pulse-ring 2.4s ease-out infinite;
+}
+
+@keyframes strike-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+.float {
+  animation: strike-float 4s ease-in-out infinite;
+}
+
+/* Periodic lightning flicker used by the sale discovery cue to draw the eye */
+@keyframes strike-lightning-flash {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 0 rgba(245, 196, 81, 0));
+  }
+  4% {
+    filter: drop-shadow(0 0 28px rgba(245, 196, 81, 0.95));
+  }
+  8% {
+    filter: drop-shadow(0 0 6px rgba(245, 196, 81, 0.4));
+  }
+  12% {
+    filter: drop-shadow(0 0 34px rgba(245, 196, 81, 1));
+  }
+  18%,
+  100% {
+    filter: drop-shadow(0 0 0 rgba(245, 196, 81, 0));
+  }
+}
+.lightning-flicker {
+  animation: strike-lightning-flash 5s ease-in-out infinite;
+}
+
+/* Shimmer sweep across the discovery chip text */
+@keyframes strike-shimmer {
+  0% {
+    background-position: -120% 0;
+  }
+  100% {
+    background-position: 220% 0;
+  }
+}
+.shimmer-text {
+  background-image: linear-gradient(
+    100deg,
+    rgba(245, 196, 81, 0.55) 0%,
+    #fff 50%,
+    rgba(245, 196, 81, 0.55) 100%
+  );
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: strike-shimmer 2.8s linear infinite;
+}
+
+/* Subtle breathing glow behind the "Take a look" style discovery cue text,
+   layered on top of .shimmer-text to make it read as clearly clickable. */
+@keyframes strike-cue-glow {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 0 rgba(245, 196, 81, 0));
+  }
+  50% {
+    filter: drop-shadow(0 0 6px rgba(245, 196, 81, 0.65));
+  }
+}
+.cue-glow {
+  animation: strike-cue-glow 2.2s ease-in-out infinite;
+}
+
+/* Dynamic pop-in + breathing glow for the attention-grabber popup box that
+   floats above the mascot and the "Thunder Sale Exclusive" chip */
+@keyframes strike-cue-popup-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.7) translateY(18px);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.06) translateY(-4px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+@keyframes strike-cue-popup-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 22px -4px rgba(245, 196, 81, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 40px -2px rgba(245, 196, 81, 0.8);
+  }
+}
+.cue-popup-box {
+  animation: strike-cue-popup-pop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+    strike-cue-popup-glow 2.4s ease-in-out infinite;
+}
+.cue-popup-tail {
+  position: absolute;
+  bottom: -7px;
+  right: 28px;
+  width: 14px;
+  height: 14px;
+  background: linear-gradient(135deg, var(--surface-2), var(--surface));
+  border-right: 1px solid rgba(245, 196, 81, 0.5);
+  border-bottom: 1px solid rgba(245, 196, 81, 0.5);
+  transform: rotate(45deg);
+}
+
+/* Backdrop fade-in for the big centered offer reveal modal */
+@keyframes strike-modal-backdrop {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Bouncy pop-in entrance for the reveal modal card */
+@keyframes strike-modal-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.6) translateY(40px);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.04) translateY(-6px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+.modal-pop {
+  animation: strike-modal-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Falling confetti burst celebrating the offer reveal */
+@keyframes strike-confetti-fall {
+  0% {
+    transform: translateY(-20px) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(420px) rotate(540deg);
+    opacity: 0;
+  }
+}
+.confetti-piece {
+  animation: strike-confetti-fall 1.4s ease-in forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal-pop,
+  .confetti-piece {
+    animation: none;
+  }
+}
+
+/* Quick spark burst shown on each charge tap */
+@keyframes strike-spark-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  35% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.5);
+  }
+}
+.spark-pop {
+  animation: strike-spark-pop 0.5s ease-out forwards;
+}
+
+@keyframes strike-robot-drift {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate(-8px, -8px) rotate(-6deg);
+  }
+  50% {
+    transform: translate(-16px, 2px) rotate(0deg);
+  }
+  75% {
+    transform: translate(-6px, 8px) rotate(6deg);
+  }
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+}
+.animate-robot-float {
+  animation: strike-robot-drift 6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse-ring,
+  .float,
+  .animate-robot-float,
+  .lightning-flicker,
+  .shimmer-text,
+  .spark-pop {
+    animation: none;
+  }
+}
+
+/* Thin scrollbar for code panel */
+.thin-scroll::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.thin-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 9999px;
+}
