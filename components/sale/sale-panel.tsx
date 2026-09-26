@@ -116,7 +116,7 @@ function ChargeView({ onReveal }: { onReveal: () => void }) {
             'h-14 w-14 transition-all duration-300',
             done ? 'scale-110 fill-gold text-gold' : 'text-gold/70',
           )}
-          style={{ filter: done ? 'drop-shadow(0 0 16px rgba(245,196,81,0.8))' : undefined }}
+          style={{ filter: done ? 'drop-shadow(0 0 16px rgba(247, 187, 49, 0.8))' : undefined }}
         />
       </div>
 
