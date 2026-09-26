@@ -3,8 +3,8 @@
 // page refresh never resets the countdown.
 
 export const SALE = {
-  name: 'THUNDER SALE EXCLUSIVE',
-  headline: 'Something special is waiting for you',
+  name: 'THUNDER STUDENT DEAL',
+  headline: 'A special student deal is waiting for you',
   discountLabel: '25% OFF',
   discountPercent: 25,
   appliesTo: 'Strike Ultra — 4 Year Membership',

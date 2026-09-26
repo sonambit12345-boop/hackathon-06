@@ -15,9 +15,9 @@ interface MascotCueProps {
 // actual attention-grabber, distinct from the chip's calmer branding text.
 const ATTENTION_LINES = [
   'Wait…',
-  'What is this lightning?',
-  "What's inside it?",
-  "Let's tap to see…",
+  'A little something for you ⚡',
+  'Your student surprise is hiding here…',
+  'One tap. One special deal.',
 ]
 
 // Floating discovery cue — a mascot with a pulsing, lightning-flickering
